@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import tools.Dumpper;
 
 public class GroupAnagram {
 
@@ -45,8 +44,7 @@ public class GroupAnagram {
 //			}
 //		}
 		result = new ArrayList<List<String>>(hash.values());
-		Dumpper<String, String> mapDumpper = new Dumpper<String, String>();
-		mapDumpper.dump(hash);
+
 		//mapDumpper.dump(result);
 		return result;
 	}
@@ -94,13 +92,11 @@ public class GroupAnagram {
 				map.put(keyStr, new ArrayList<String>());
 			map.get(keyStr).add(s);
 		}
-		Dumpper<String, String> mapDumpper = new Dumpper<String, String>();
-		mapDumpper.dump(map);
+		
 		for(String key: map.keySet()) {
 			Collections.sort(map.get(key));
 		}
-		System.out.println("After sorted:");
-		mapDumpper.dump(map);
+
 		return new ArrayList<List<String>>(map.values());
 	}
 	

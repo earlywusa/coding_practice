@@ -2,9 +2,6 @@ package recursion;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import tools.Dumpper;
-
 public class Permutation {
 	
 	public List<LinkedList<Character>> findAllPermutation(String s){
@@ -50,9 +47,6 @@ public class Permutation {
 		System.out.println("getPerm: " + str);
 		List<String> ret = new ArrayList<String>();
 		getPerms("", str, ret , 0);
-		
-		Dumpper<String, String> aDumper = new Dumpper<String, String>();
-		aDumper.dumpListOfString(ret);
 	}
 	
 	public void getPerms(String prefix, String reminder, List<String> result, int recurCount){

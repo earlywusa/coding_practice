@@ -3,10 +3,8 @@ package recursion;
 import java.util.ArrayDeque;
 import java.util.Stack;
 
-import tools.Dumpper;
 
 public class TowerOfHanoi {
-	Dumpper<Integer, Integer> dumpper = new Dumpper<Integer, Integer>();
 	Stack<Integer> x, y, z;
 	public TowerOfHanoi(){
 		x = new Stack<Integer>();
@@ -61,14 +59,7 @@ public class TowerOfHanoi {
 	}
 	
 	public void dump(){
-		System.out.println();
-		System.out.println("Stack x: ");
-		dumpper.dumpStack(x);
-		System.out.println("Stack y: ");
-		dumpper.dumpStack(y);
-		System.out.println("Stack z: ");
-		dumpper.dumpStack(z);
-		System.out.println();
+
 	}
 
 }
