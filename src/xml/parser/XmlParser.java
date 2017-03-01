@@ -84,10 +84,11 @@ public class XmlParser {
 		}
 		
 		//debug information
-		dumpStack(cache);
+		//dumpStack(cache);
+
+		eNode root = processElementStack(cache);
 		System.out.println();
 		System.out.println("Dump node tree");
-		eNode root = processElementStack(cache);
 		dumpNodePreOrder(root);
 		return ret;
 	}
@@ -122,22 +123,60 @@ public class XmlParser {
 	}
 	
 	private eNode createBranchNode(String str){
-		eNode newNode = new eNode();
-		newNode.element_raw_content = str;
-		
-		
+		eNode newNode = parseRawData(str);
 		return newNode;
 	}
 	
-	private List<String> parseRawData(String str){
-		List<String> list = new LinkedList<>();
+	public eNode parseRawData(String str){
+		boolean foundAttributeName = false;
+		String attr_name= null;
+		eNode branchNode = new eNode();
+		//boolean foundAttributeValue = false;
 		for(int i = 0; i<str.length(); i++){
-			if(str.charAt(i) == '<'){
+			char c = str.charAt(i);
+			if(c == '<'){
 				for(int j = i; j<str.length();j++){
-					
+					if(str.charAt(j) == ' ' || str.charAt(j) == '>'){
+						String elementName = str.substring(i+1, j);
+						branchNode.element_name = elementName.trim();
+						//System.out.println("element name: "  + elementName);
+						i = j;
+						break;
+					}
 				}
 			}
+			else if(Character.isAlphabetic(c) || c == '"'){
+				
+				if(!foundAttributeName){
+					for(int j=i; j<str.length(); j++){
+						if(str.charAt(j) == '='){
+							attr_name = str.substring(i, j).trim();
+							//System.out.println("attribute name: "  + attr_name);
+							foundAttributeName = true;
+							i = j;
+							break;
+						}
+					}
+				}
+				else{
+					for(int k = i; k<str.length(); k++){
+						if(str.charAt(k) == ' ' || str.charAt(k) == '>'){
+							String attr_val = str.substring(i, k).trim();
+							if(attr_name != null && attr_val != null){
+								System.out.println("Element: " + branchNode.element_name + " put in: "  + attr_name + " " + attr_val);
+								branchNode.attributeMap.put(attr_name, attr_val);
+							}
+							foundAttributeName = false;
+							i = k;
+							break;
+						}
+					}
+				}
+
+			}
 		}
+		System.out.println();
+		return branchNode;
 	}
 	
 	
@@ -152,8 +191,18 @@ public class XmlParser {
 		
 	}
 	
-	private void dumpNodePreOrder(eNode root){
-		System.out.println(root.element_raw_content);
+	public static void dumpNodePreOrder(eNode root){
+		if(root.isLeaf){
+			System.out.println("Leaf: "+root.element_raw_content);
+		}
+		else{
+			System.out.println("Branch: " + root.element_name);
+			Iterator<String> itr = root.attributeMap.keySet().iterator();
+			while(itr.hasNext()){
+				String key = itr.next();
+				System.out.println("["+ key + "]=[" + root.attributeMap.get(key)+"]");
+			}
+		}
 		for(eNode i : root.subNodes){
 			dumpNodePreOrder(i);
 		}
@@ -188,17 +237,11 @@ public class XmlParser {
 		public boolean isLeaf = false;
 		public String element_raw_content = null;
 		public HashMap<String, String> attributeMap = null;
-		public String attr_name = null;
-		public String attr_val = null;
+		public String element_name = null;
 		public List<eNode> subNodes = null;
 		
 		public eNode(){
 			_init();
-		}
-		public eNode(String attr_name, String attr_val){
-			_init();
-			this.attr_name = attr_name;
-			this.attr_val = attr_val;
 		}
 		
 		private void _init(){
