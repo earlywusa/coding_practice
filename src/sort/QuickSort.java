@@ -1,58 +1,61 @@
 package sort;
 
-import java.util.Arrays;
-
 public class QuickSort {
 
-	public static void sort(int[] a){
-		quickSort(0, a.length-1, a);
+	public static int limit = 0;
+	public static void main(String[] arg)
+	{
+		int[] testA = {22,6,18,7,4,13};
+		
+		sort(testA, 0, testA.length-1);
+		dump(testA);
 	}
 	
-	public static void quickSort(int low, int hi, int[] array){
-		if(low < hi){
-			int p = patition(low, hi, array);
-			quickSort(low, p-1, array);
-			quickSort(p+1, hi, array);
+	public static void sort(int[] array, int low, int high)
+	{
+		
+		if(low < high)
+		{
+			dump(array);
+			int p = partition(array, low, high);
+			sort(array, low, p-1);
+			sort(array, p+1, high);
 		}
-
 	}
 	
-	public static int patition(int start, int end, int[] a){
-		int p = end;
-		int i = start;
-		for(int j = start; j<end; j++){
-			if(a[j] < a[p]){
-				swap(i, j, a);
-				i++;
+	public static int partition(int[] array, int low, int high)
+	{
+		if(limit > 100) return -1;
+		limit ++;
+		System.out.println("Start patition: " + " low : " + array[low] + " high: " + array[high]);
+		int pivot = array[high];
+		int i = low;
+		for(int j = low; j<high; j++)
+		{
+			if(array[j] <= pivot){
+				int tmp = array[j];
+				System.out.println("swap: " + tmp + " -> " + array[i]);
+				array[j] = array[i];
+				array[i] = tmp;
+				i ++;
+			}
+			else{
+				System.out.println("passby: " + array[j]);
 			}
 		}
-		swap(i,p,a);
-		System.out.println("return " + i);
+		System.out.println("end patition swap: " + array[i] + " -> " + array[high] + " i = " + i + " high = " + high);
+		int tmp = array[i];
+		array[i] = array[high];
+		array[high] = tmp;
+		
 		return i;
 	}
 	
-	private static void swap(int i, int j, int[] arr){
-		if(arr[i] != arr[j]){
-			System.out.println("swap: " + arr[i] + " " + arr[j]);
-			arr[i] = arr[i] ^ arr[j];
-			arr[j] = arr[i] ^ arr[j];
-			arr[i] = arr[i] ^ arr[j];
-			System.out.println("swapped: " + arr[i] + " " + arr[j]);
+	public static void dump(int[] array){
+		for(int i=0; i<array.length; i++)
+		{
+			System.out.print(" " + array[i]);
 		}
+		System.out.println();
 	}
-//	private static void swap(int i, int j, int[] arr){
-//		System.out.println("swap: " + arr[i] + " " + arr[j]);
-//		int tmpv = arr[i];
-//		arr[i] = arr[j];
-//		arr[j] = tmpv;
-//	}
-	
-	public static void main(String[] args){
-		int[] input = new int[]{10,2,3,6,6,7};
-		
-		sort(input);
-		
-		System.out.println(Arrays.toString(input));
-	}
-	
 }
