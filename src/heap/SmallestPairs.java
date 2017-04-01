@@ -1,7 +1,9 @@
 package heap;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class SmallestPairs {
 /**
@@ -13,6 +15,26 @@ public class SmallestPairs {
 		int[] nums2 = new int[]{2, 3, 6};
 		SmallestPairs p = new SmallestPairs();
 		p.kSmallestPairs(nums1, nums2, 5);
+		
+		Comparator<SmallestPairs> c = new Comparator<SmallestPairs>(){
+
+			@Override
+			public int compare(SmallestPairs o1, SmallestPairs o2) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+		};
+		
+		PriorityQueue<int[]> mq = new PriorityQueue<>((int[] a, int[]b)->(a[0]+a[1])-(b[0]+b[1]));
+		mq = new PriorityQueue<int[]>(new Comparator<int[]>(){
+			@Override
+			public int compare(int[] o1, int[] o2) {
+				return o1[0]+o1[1] - o2[0]-o2[1];
+			}
+		});
+		mq.add(nums2);mq.add(nums1);
+		System.out.println(mq.peek()[0]+ " " + mq.peek()[1]);
 
 	}
 	public List<int[]> kSmallestPairs(int[] nums1, int[] nums2, int k) {
