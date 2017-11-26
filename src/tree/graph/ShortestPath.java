@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
 
+import tree.BinaryMinHeap;
 import tree.GraphNode;
 
 public class ShortestPath {
@@ -40,10 +42,11 @@ public class ShortestPath {
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		List<GraphNode> ret = new ArrayList<>();
+	
 		ShortestPath sp = new ShortestPath();
 		List<GraphNode> nodeList = constructTestNode();
-		List<GraphNode> path = sp.findPath(nodeList,getNode(nodeList, 'a'), getNode(nodeList, 'f'));
+		List<GraphNode> path = sp.findPath(nodeList,getNode(nodeList, 'a'), getNode(nodeList, 'd'));
 		System.out.print("Path: ");
 		for(int i = 0; i<path.size(); i++){
 			System.out.print("" + path.get(i) + " " );
@@ -62,73 +65,79 @@ public class ShortestPath {
 		return n;
 	}
 	
-	private Binary
 	
-	PriorityQueue<WeightedNode> pq = null;
-	Map<WeightedNode, WeightedNode> parentMap = null;
-	Set<WeightedNode> visitedSet = null;
-	public ShortestPath(){
-		pq = new PriorityQueue<>(new Comparator<WeightedNode>(){
-			@Override
-			public int compare(WeightedNode a, WeightedNode b){
-				
-				if(a.currentWeight > b.currentWeight){
-					return 1;
-				}
-				else if(a.currentWeight < b.currentWeight){
-					return -1;
-				}
-				else
-					return 0;
-			}
+	BinaryMinHeap<GraphNode> bmh = null;
+	Map<GraphNode, GraphNode> parentMap = null;
+	Set<GraphNode> visitedSet = null;
 
-		});
-		
+	public ShortestPath(){
+		bmh = new BinaryMinHeap<>();
 		parentMap = new HashMap<>();
 		visitedSet = new HashSet<>();
 		
 	}
 	
 	public List<GraphNode> findPath(List<GraphNode> nodes, GraphNode start, GraphNode target){
-		Map<Integer, WeightedNode> nodeMap = new HashMap<>();
+		List<GraphNode> path = new ArrayList<>();
+		start.dist = 0;
 		for(int i = 0; i<nodes.size(); i++){
-			WeightedNode wnd = new WeightedNode(nodes.get(i));
-			pq.add(wnd);
-			nodeMap.put(wnd.node.key,wnd);
+			bmh.add(nodes.get(i));
 		}
-		dumpPriorityQueue();
-		Iterator itr = nodeMap.keySet().iterator();
-		while(itr.hasNext()){
-			Integer key = (Integer)itr.next();
-			System.out.println("key: " + key);
+		GraphNode current = null;
+		while(!bmh.isEmpty()){
+			current = bmh.extractMin();
+			visitNode(current);
+			dump();
 		}
-		nodeMap.get(new Integer('c')).currentWeight = 100;
-		dumpPriorityQueue();
-		
-		List<GraphNode> path = new ArrayList<GraphNode>();
-		WeightedNode firstNode = pq.poll();
-		firstNode.currentWeight = 0;
-		visitNode(firstNode);
-		
-		while(! pq.isEmpty()){
-			WeightedNode min = pq.poll();
-			visitNode(min);
+		GraphNode parent = parentMap.get(target);
+		Stack<GraphNode> spath = new Stack<>();
+		spath.push(target);spath.push(parent);
+		while(parent != start){
+			parent = parentMap.get(parent);
+			spath.push(parent);
 		}
-		
+		while(!spath.isEmpty()){
+			path.add(spath.pop());
+		}
 		return path;
 	}
 	
-	private void visitNode(WeightedNode current){
-		for(int i = 0; i<current.node.neighbors.size(); i++){
-			
+	private void visitNode(GraphNode current){
+		if(current == null) return;
+		System.out.println("start processing: " + current);
+		visitedSet.add(current);
+		for(int i = 0; i<current.neighbors.size(); i++){
+			GraphNode neighbor = current.neighbors.get(i);
+			if(!visitedSet.contains(neighbor)){
+				System.out.println("visiting " + neighbor.key + " from " + current);
+				int distance = current.distMap.get(neighbor) + current.dist;
+				if(neighbor.dist > distance){
+					neighbor.dist = distance;
+					parentMap.put(neighbor, current);
+					System.out.println("update distance of " + neighbor.key + " to " + neighbor.dist);
+					bmh.rearrange(neighbor);
+				}
+			}
 		}
 	}
 	
-	
-	public void dumpPriorityQueue(){
-		Iterator<WeightedNode> itr = pq.iterator();
+	public void dump(){
+		System.out.println("Min Heap:");
+		System.out.println(bmh);
+		
+		System.out.println("visited set:");
+		Iterator<GraphNode> itr = visitedSet.iterator();
 		while(itr.hasNext()){
-			System.out.println(itr.next());
+			System.out.print("{"+itr.next().toString() + "} ");
 		}
+		System.out.println();
+		System.out.println("parent map: ");
+		Iterator<GraphNode> pitr = parentMap.keySet().iterator();
+		while(pitr.hasNext()){
+			GraphNode key = pitr.next();
+			System.out.println(key + " parent: " + parentMap.get(key));
+		}
+		System.out.println();
 	}
+	
 }

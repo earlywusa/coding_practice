@@ -20,15 +20,17 @@ public class TraversalLevelNoCache {
 	 */
 	public static void breadthFirstNoCache(TreeNode root){
 		int height = getHeight(root);
-		System.out.println("height = " + height);
+		System.out.println("depth = " + height);
 		for(int i =0;i<height; i++){
+			System.out.println("current depth: " + i);
 			traversalBfs(root, i);
+			System.out.println();
 		}
 	}
 	
 	public static void traversalBfs(TreeNode node, int depth){
 		if(node == null || depth<0) return;
-		if(depth == 0) System.out.println("Node: " + node.value);
+		if(depth == 0) System.out.print(node.value + " ");
 		traversalBfs(node.left, depth-1);
 		traversalBfs(node.right, depth-1);
 	}

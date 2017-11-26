@@ -6,8 +6,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 import math.Permutation;
 import tools.ExecutionTimeTracker;
@@ -22,9 +25,31 @@ public class TestDriver {
 		//testCompareTree();
 		//testGenerateAllPossibleBST();		
 		//testCommonAncester();
-		testRegex();
-
+		//testRegex();
+		//testPriorityQueue();
+		testAvlTree();
+		
+		
 	}
+	public static void testAvlTree(){
+		AvlTree<Integer> tree = new AvlTree<>();
+		List<Integer> inputList = Arrays.asList(41,20, 11/*, 29, 26, 65, 50,23*/);
+		tree.addAll(inputList);
+		System.out.println();
+		tree.traversal(false);
+		tree.testRotate();
+		tree.traversal(false);
+		
+	}
+	public static void testPriorityQueue(){
+		PriorityQueueAVL<Integer> q = new PriorityQueueAVL<>();
+		List<Integer> inputList = Arrays.asList(41,20, 11, 29, 26, 65, 50);
+		q.addAll(inputList);
+		q.add(23);
+		q.dump();
+		
+	}
+	
 	public static void testRegex(){
 		//"^hmac\\s(\\S+):(\\S+)$";
 		// check for "hmac" scheme

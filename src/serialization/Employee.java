@@ -16,4 +16,10 @@ public class Employee implements Serializable{
 	      System.out.println("Mailing a check to " + name + " " + address);
 	   }
 
+	@Override
+	public String toString() {
+		return "Employee [name=" + name + ", address=" + address + ", SSN=" + SSN + ", number=" + number + ", taskList="
+				+ taskList + "]";
+	}
+
 }
